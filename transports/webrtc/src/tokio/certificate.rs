@@ -18,7 +18,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-use rand::{distributions::DistString, CryptoRng, Rng};
+use rand::{CryptoRng, Rng};
+use rcgen::KeyPair;
 use webrtc::peer_connection::certificate::RTCCertificate;
 
 use crate::tokio::fingerprint::Fingerprint;
@@ -37,12 +38,9 @@ impl Certificate {
     where
         R: CryptoRng + Rng,
     {
-        let mut params = rcgen::CertificateParams::new(vec![
-            rand::distributions::Alphanumeric.sample_string(&mut rand::thread_rng(), 16)
-        ]);
-        params.alg = &rcgen::PKCS_ECDSA_P256_SHA256;
+        let keypair = KeyPair::generate_for(&rcgen::PKCS_ECDSA_P256_SHA256)?;
         Ok(Self {
-            inner: RTCCertificate::from_params(params).expect("default params to work"),
+            inner: RTCCertificate::from_key_pair(keypair).expect("default params to work"),
         })
     }
 
@@ -96,6 +94,14 @@ pub struct Error(#[from] Kind);
 enum Kind {
     #[error(transparent)]
     InvalidPEM(#[from] webrtc::Error),
+    #[error(transparent)]
+    GenError(#[from] rcgen::Error),
+}
+
+impl From<rcgen::Error> for Error {
+    fn from(value: rcgen::Error) -> Self {
+        Error(value.into())
+    }
 }
 
 #[cfg(all(test, feature = "pem"))]

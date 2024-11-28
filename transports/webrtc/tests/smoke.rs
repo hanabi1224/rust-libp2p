@@ -45,6 +45,8 @@ async fn smoke() {
     let (b_peer_id, mut b_transport) = create_transport();
 
     let addr = start_listening(&mut a_transport, "/ip4/127.0.0.1/udp/0/webrtc-direct").await;
+    let addr_str = addr.to_string();
+    println!("addr: {addr_str}");
     start_listening(&mut b_transport, "/ip4/127.0.0.1/udp/0/webrtc-direct").await;
     let ((a_connected, _, _), (b_connected, _)) =
         connect(&mut a_transport, &mut b_transport, addr).await;

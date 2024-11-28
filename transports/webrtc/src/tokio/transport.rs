@@ -90,10 +90,9 @@ impl libp2p_core::Transport for Transport {
         let udp_mux = UDPMuxNewAddr::listen_on(socket_addr)
             .map_err(|io| TransportError::Other(Error::Io(io)))?;
 
-        self.listeners.push(
-            ListenStream::new(id, self.config.clone(), udp_mux)
-                .map_err(|e| TransportError::Other(Error::Io(e)))?,
-        );
+        let listener = ListenStream::new(id, self.config.clone(), udp_mux)
+            .map_err(|e| TransportError::Other(Error::Io(e)))?;
+        self.listeners.push(listener);
 
         Ok(())
     }
