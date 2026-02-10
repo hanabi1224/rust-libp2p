@@ -1,4 +1,7 @@
 ## 0.50.0
+- Log when sending and receiving messages.
+  See [PR 6234](https://github.com/libp2p/rust-libp2p/pull/6234)
+
 - Prevent mesh exceeding mesh_n_high.
   See [PR 6184](https://github.com/libp2p/rust-libp2p/pull/6184)
 
@@ -28,6 +31,12 @@
 
 - gossipsub: do early return in for an empty input
   See [PR 6208](https://github.com/libp2p/rust-libp2p/pull/6208).
+
+- Refactor gossipsub with in-place negative-score peer removal.
+  See [PR 6209](https://github.com/libp2p/rust-libp2p/pull/6209).
+
+- Avoid direct casting from u128 to u64.
+  See [PR 6211](https://github.com/libp2p/rust-libp2p/pull/6211).
 
 ## 0.49.2
 
